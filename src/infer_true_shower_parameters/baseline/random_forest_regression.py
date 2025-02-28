@@ -9,9 +9,15 @@ class RandomForestRegression(nn.Module):
     """
     Random Forest Regressor that uses one forrest for all output properties.
     """
-    def __init__(self, n_trees:int, max_depth:int, n_jobs=32):
+    def __init__(self, n_trees:int=100, max_depth:int=10, n_jobs=32):
         super().__init__()
         self.forest = RandomForestRegressor(n_estimators=n_trees, max_depth=max_depth, n_jobs=n_jobs)
+
+    def set_params(self, max_depth=None, n_trees=None):
+        if max_depth:
+            self.forest.set_params(max_depth=max_depth)
+        if n_trees:
+            self.forest.set_params(n_estimators=n_trees)
 
     def forward(self, X:torch.tensor):
         x_np = X.detach().cpu().numpy()
@@ -30,9 +36,17 @@ class RandomForestsRegression(nn.Module):
     """
     Random Forest Regressor that uses one forest for each output property.
     """
-    def __init__(self, n_trees:int, max_depth:int, n_jobs=32):
+    def __init__(self, n_trees:int=100, max_depth:int=10, n_jobs=32):
         super().__init__()
         self.forests = [RandomForestRegressor(n_estimators=n_trees, max_depth=max_depth, n_jobs=n_jobs) for _ in range(NUM_TRUE_SHOWER)]
+
+    def set_params(self, max_depth=None, n_trees=None):
+        if max_depth:
+            for forest in self.forests:
+                forest.set_params(max_depth=max_depth)
+        if n_trees:
+            for forest in self.forests:
+                forest.set_params(n_estimators=n_trees)        
 
     def forward(self, X:torch.tensor):
         x_np = X.detach().cpu().numpy()

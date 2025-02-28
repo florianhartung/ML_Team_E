@@ -9,9 +9,13 @@ class DecisionTreeRegression(nn.Module):
     """
     Decision Tree Regressor that uses one tree for all output properties.
     """
-    def __init__(self,  max_depth:int):
+    def __init__(self,  max_depth:int=10):
         super().__init__()
         self.tree = DecisionTreeRegressor(max_depth=max_depth)
+
+    def set_params(self, max_depth=None):
+        if max_depth:
+            self.tree.set_params(max_depth=max_depth)
 
     def forward(self, X:torch.tensor):
         x_np = X.detach().cpu().numpy()
@@ -30,9 +34,14 @@ class DecisionTreesRegression(nn.Module):
     """
     Decision Tree Regressor that uses one tree for each output property.
     """
-    def __init__(self,  max_depth:int):
+    def __init__(self,  max_depth:int=10):
         super().__init__()
         self.trees = [DecisionTreeRegressor(max_depth=max_depth) for _ in range(NUM_TRUE_SHOWER)]
+
+    def set_params(self, max_depth=None):
+        if max_depth:
+            for tree in self.trees:
+                tree.set_params(max_depth=max_depth)
 
     def forward(self, X:torch.tensor):
         x_np = X.detach().cpu().numpy()

@@ -1,0 +1,12 @@
+
+matplotlib
+numpy
+pyarrow
+ipython
+ipykernel
+scikit-learn
+
+# TODO: These do not use --index-url https://download.pytorch.org/whl/cu121 yet, which might lead to errors
+torch==2.5.0
+torchvision==0.20.0
+torchaudio==2.5.0

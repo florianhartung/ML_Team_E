@@ -9,3 +9,10 @@ pip install torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 --index-url https
 ```
 
 Formatter/Linter: [Ruff](https://github.com/astral-sh/ruff)
+
+## Setup development environment Nix Flakes
+```sh
+nix develop --no-pure-eval
+```
+
+Alternatively use [nix-direnv](https://github.com/nix-community/nix-direnv) to automatically activate the devshell.

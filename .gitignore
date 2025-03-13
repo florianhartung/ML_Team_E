@@ -1,2 +1,8 @@
-data/**
 __pycache__
+
+# datasets
+data/
+
+# nix development environment
+.devenv/
+.direnv/

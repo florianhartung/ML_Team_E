@@ -1,4 +1,5 @@
 NUM_PIXELS = 1039
+
 PARAMS_TRUE_SHOWER = [
     "true_energy",
     "true_theta",
@@ -55,7 +56,7 @@ PARAMS_STEREO = [
 
 PARAMS_IMAGE_M1 = [f"image_m1_{i}" for i in range(NUM_PIXELS)]
 PARAMS_IMAGE_M2 = [f"image_m2_{i}" for i in range(NUM_PIXELS)]
-PARAMS_CLEAN_IMAGE_M1 = [f"image_m1_{i}" for i in range(NUM_PIXELS)]
-PARAMS_CLEAN_IMAGE_M2 = [f"image_m2_{i}" for i in range(NUM_PIXELS)]
+PARAMS_CLEAN_IMAGE_M1 = [f"clean_image_m1_{i}" for i in range(NUM_PIXELS)]
+PARAMS_CLEAN_IMAGE_M2 = [f"clean_image_m2_{i}" for i in range(NUM_PIXELS)]
 TIMING_M1 = [f"timing_m1_{i}" for i in range(NUM_PIXELS)]
 TIMING_M2 = [f"timing_m2_{i}" for i in range(NUM_PIXELS)]

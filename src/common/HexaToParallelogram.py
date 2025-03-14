@@ -1,9 +1,6 @@
 import torch
-import sys
-sys.path.append("/path/to/magicdl/parent")
 from magicdl import magic
-
-NUM_PIXELS = 1039
+from src.common import NUM_PIXELS
 
 class HexaToParallelogram(torch.nn.Module):
     def __init__(self, padding_value=0.0):

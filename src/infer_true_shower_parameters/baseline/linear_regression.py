@@ -13,7 +13,6 @@ class LinearRegression(nn.Module):
     
     def predict(self, X):
         self.eval()
-        X = torch.tensor(X, dtype=torch.float32)
         with torch.no_grad():
             return self.forward(X).numpy()
         
@@ -21,8 +20,6 @@ class LinearRegression(nn.Module):
         print("test")
 
     def fit(self, X, y, lr=0.01, epochs=1000):
-        X = torch.tensor(X, dtype=torch.float32)
-        y = torch.tensor(y, dtype=torch.float32)
         assert not torch.isnan(X).any(), "X contains NaN values"
         assert not torch.isnan(y).any(), "y contains NaN values"
 

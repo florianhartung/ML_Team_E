@@ -9,13 +9,15 @@ class DecisionTreeRegression(nn.Module):
     """
     Decision Tree Regressor that uses one tree for all output properties.
     """
-    def __init__(self,  max_depth:int=10):
+    def __init__(self,  max_depth:int=10, ccp_alpha=0):
         super().__init__()
-        self.tree = DecisionTreeRegressor(max_depth=max_depth)
+        self.tree = DecisionTreeRegressor(max_depth=max_depth, ccp_alpha=ccp_alpha)
 
-    def set_params(self, max_depth=None):
+    def set_params(self, max_depth=None, ccp_alpha=None):
         if max_depth:
             self.tree.set_params(max_depth=max_depth)
+        if ccp_alpha != None:
+            self.tree.set_params(ccp_alpha=ccp_alpha)
 
     def forward(self, X:torch.tensor):
         x_np = X.detach().cpu().numpy()
@@ -29,30 +31,3 @@ class DecisionTreeRegression(nn.Module):
         x_np = X.detach().cpu().numpy()
         y_np = y.detach().cpu().numpy()
         self.tree.fit(x_np, y_np)
-
-class DecisionTreesRegression(nn.Module):
-    """
-    Decision Tree Regressor that uses one tree for each output property.
-    """
-    def __init__(self,  max_depth:int=10):
-        super().__init__()
-        self.trees = [DecisionTreeRegressor(max_depth=max_depth) for _ in range(NUM_TRUE_SHOWER)]
-
-    def set_params(self, max_depth=None):
-        if max_depth:
-            for tree in self.trees:
-                tree.set_params(max_depth=max_depth)
-
-    def forward(self, X:torch.tensor):
-        x_np = X.detach().cpu().numpy()
-        pred = np.array([tree.predict(x_np) for tree in self.trees]).T
-        return torch.tensor(pred, dtype=torch.float32)
-    
-    def predict(self, X:np.array):
-        return np.array([tree.predict(X) for tree in self.trees]).T
-    
-    def fit(self, X:torch.tensor, y:torch.tensor):
-        x_np = X.detach().cpu().numpy()
-        ys_np = y.detach().cpu().numpy()
-        for tree, y in zip(self.trees, ys_np.T):
-            tree.fit(x_np, y)

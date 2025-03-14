@@ -28,7 +28,7 @@ def read_protons() -> pd.DataFrame:
 def read_dataset_and_flatten_images(
     parquet_file: str, parameter_columns: list[str], image_columns: list[str]
 ) -> pd.DataFrame:
-    parquet_file = pq.ParquetFile(DATA_PROTONS_PATH, memory_map=True)
+    parquet_file = pq.ParquetFile(parquet_file, memory_map=True)
 
     data = []
     for batch in parquet_file.iter_batches(batch_size=BATCH_SIZE):

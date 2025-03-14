@@ -1,0 +1,3 @@
+[submodule "magic-ml-images"]
+	path = magic-ml-images
+	url = https://github.com/astrojarred/magic-ml-images.git

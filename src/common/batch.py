@@ -9,14 +9,14 @@ class BatchDataset(torch.utils.data.Dataset):
     >> for x, y in loader: # x and y are batches
     >>      ...
     """
-    def __init__(self, X_train, y_train):
+    def __init__(self, *datasets):
         super(BatchDataset, self).__init__()
 
-        self.X_train = X_train
-        self.y_train = y_train
+        self.datasets = [*datasets]
+        assert all([dataset.shape[0] == datasets[0].shape[0] for dataset in datasets])
 
     def __len__(self):
-        return self.y_train.shape[0]
+        return self.datasets[0].shape[0]
 
     def __getitem__(self, index):
-        return self.X_train[index], self.y_train[index]
+        return [dataset[index] for dataset in self.datasets]

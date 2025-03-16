@@ -5,12 +5,12 @@ from sklearn.preprocessing import StandardScaler, FunctionTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.compose import ColumnTransformer
 
-from src.common import PARAMS_TRUE_SHOWER, PARAMS_HILLAS, PARAMS_STEREO
+from src.common import FEATURES_TRUE_SHOWER, FEATURES_HILLAS, FEATURES_STEREO
 
 
 def preprocess(
     data: pd.DataFrame,
-    normalize_params=PARAMS_TRUE_SHOWER + PARAMS_HILLAS + PARAMS_STEREO,
+    normalize_params=FEATURES_TRUE_SHOWER + FEATURES_HILLAS + FEATURES_STEREO,
     train_portion=0.7,
     validation_portion=0.2,
     stratify_column_name: str = None

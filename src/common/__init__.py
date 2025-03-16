@@ -1,6 +1,6 @@
 NUM_PIXELS = 1039
 
-PARAMS_TRUE_SHOWER = [
+FEATURES_TRUE_SHOWER = [
     "true_energy",
     "true_theta",
     "true_phi",
@@ -11,7 +11,7 @@ PARAMS_TRUE_SHOWER = [
     "true_impact_m2",
 ]
 
-PARAMS_HILLAS = [
+FEATURES_HILLAS = [
     "hillas_length_m1",
     "hillas_width_m1",
     "hillas_delta_m1",
@@ -30,7 +30,7 @@ PARAMS_HILLAS = [
     "hillas_cos_delta_m2",
 ]
 
-PARAMS_STEREO = [
+FEATURES_STEREO = [
     "stereo_direction_x",
     "stereo_direction_y",
     "stereo_zenith",
@@ -54,9 +54,32 @@ PARAMS_STEREO = [
     "stereo_cos_between_shower",
 ]
 
-PARAMS_IMAGE_M1 = [f"image_m1_{i}" for i in range(NUM_PIXELS)]
-PARAMS_IMAGE_M2 = [f"image_m2_{i}" for i in range(NUM_PIXELS)]
-PARAMS_CLEAN_IMAGE_M1 = [f"clean_image_m1_{i}" for i in range(NUM_PIXELS)]
-PARAMS_CLEAN_IMAGE_M2 = [f"clean_image_m2_{i}" for i in range(NUM_PIXELS)]
-TIMING_M1 = [f"timing_m1_{i}" for i in range(NUM_PIXELS)]
-TIMING_M2 = [f"timing_m2_{i}" for i in range(NUM_PIXELS)]
+FEATURES_POINTING = [
+    "pointing_zenith",
+    "pointing_azimuth",
+]
+
+FEATURES_SOURCE = [
+    "source_alpha_m1",
+    "source_dist_m1",
+    "source_cos_delta_alpha_m1",
+    "source_dca_m1",
+    "source_dca_delta_m1",
+    "source_alpha_m2",
+    "source_dist_m2",
+    "source_cos_delta_alpha_m2",
+    "source_dca_m2",
+    "source_dca_delta_m2",
+]
+
+FEATURES_TIME = [
+    "time_gradient_m1",
+    "time_gradient_m2",
+]
+
+FEATURES_IMAGE_M1 = [f"image_m1_{i}" for i in range(NUM_PIXELS)]
+FEATURES_IMAGE_M2 = [f"image_m2_{i}" for i in range(NUM_PIXELS)]
+FEATURES_CLEAN_IMAGE_M1 = [f"clean_image_m1_{i}" for i in range(NUM_PIXELS)]
+FEATURES_CLEAN_IMAGE_M2 = [f"clean_image_m2_{i}" for i in range(NUM_PIXELS)]
+FEATURES_TIMING_M1 = [f"timing_m1_{i}" for i in range(NUM_PIXELS)]
+FEATURES_TIMING_M2 = [f"timing_m2_{i}" for i in range(NUM_PIXELS)]

@@ -47,7 +47,7 @@ class ParticleCNNRegressor(nn.Module):
         assert len(fc_layers) >= 2, "At least two fully connected layers are required"
         assert len(dropout_rates) == len(fc_layers) - 1, "dropout_rates must have length equal to len(fc_layers) - 1"
         
-        self.hex2par = HexaToParallelogram(in_channels)
+        self.hex2par = HexaToParallelogram(2)
         self.cnn = CNN(in_channels, conv_channels, kernel_size, pooling_types)
         
         # Compute flattened output size after CNN

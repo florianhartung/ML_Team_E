@@ -158,6 +158,7 @@ def train(
 
     if plot:
         plt.plot(train_r2s, label="train r2")
+        plt.ylim(0, 1)
         plt.plot(val_r2s, label="val r2")
         plt.legend()
         plt.show()

@@ -13,7 +13,7 @@ def preprocess(
     normalize_params=PARAMS_TRUE_SHOWER + PARAMS_HILLAS + PARAMS_STEREO,
     train_portion=0.7,
     validation_portion=0.2,
-    **kwargs
+    stratify_column_name: str = None
 ) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame):
     """Split and preprocess telescope data
 
@@ -25,9 +25,18 @@ def preprocess(
 
     data.dropna(inplace=True)
 
-    train, validation_test = train_test_split(data, train_size=train_portion, **kwargs)
+    stratify = None
+    if stratify_column_name is not None:
+        stratify = data[[stratify_column_name]]
+
+    train, validation_test = train_test_split(data, train_size=train_portion, stratify=stratify)
+
+
+    stratify = None
+    if stratify_column_name is not None:
+        stratify = validation_test[[stratify_column_name]]
     validation, test = train_test_split(
-        validation_test, train_size=validation_portion, **kwargs
+        validation_test, train_size=validation_portion, stratify=stratify
     )
 
     if len(normalize_params) > 1:

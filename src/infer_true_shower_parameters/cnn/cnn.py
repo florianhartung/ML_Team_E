@@ -103,7 +103,7 @@ def train(
     train_loss, val_loss = [], []
 
     model = ParticleCNNRegressor(num_additional_parameters=len(additional_features), **kwargs).to(device)
-    optimizer = optim.Adam(model.parameters(recurse=True), lr=0.001, weight_decay=weight_decay)
+    optimizer = optim.Adam(model.parameters(recurse=True), lr=0.0001, weight_decay=weight_decay)
     criterion = nn.MSELoss()
 
     for epoch in range(n_epochs):

@@ -1,4 +1,4 @@
-from typing import Iterator
+from typing import Iterator, Optional
 
 import pandas as pd
 from sklearn.preprocessing import StandardScaler, FunctionTransformer
@@ -13,7 +13,8 @@ def preprocess(
     normalize_params=FEATURES_TRUE_SHOWER + FEATURES_HILLAS + FEATURES_STEREO,
     train_portion=0.7,
     validation_portion=0.2,
-    stratify_column_name: str = None
+    stratify_column_name: str = None,
+    seed: Optional[int] = None,
 ) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame):
     """Split and preprocess telescope data
 
@@ -29,14 +30,14 @@ def preprocess(
     if stratify_column_name is not None:
         stratify = data[[stratify_column_name]]
 
-    train, validation_test = train_test_split(data, train_size=train_portion, stratify=stratify)
+    train, validation_test = train_test_split(data, train_size=train_portion, stratify=stratify, random_state=seed)
 
 
     stratify = None
     if stratify_column_name is not None:
         stratify = validation_test[[stratify_column_name]]
     validation, test = train_test_split(
-        validation_test, train_size=validation_portion, stratify=stratify
+        validation_test, train_size=validation_portion, stratify=stratify, random_state=seed
     )
 
     if len(normalize_params) > 1:

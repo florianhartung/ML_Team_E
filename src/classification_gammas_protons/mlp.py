@@ -37,6 +37,9 @@ def evaluate(model, device, dataset: BatchDataset):
 
         return (np.mean(test_batch_losses), np.mean(test_batch_accuracies))
 
+def predict(model, device, data: pd.DataFrame, features: list[str]) -> pd.DataFrame:
+    return torch.round(torch.sigmoid(model(torch.tensor(data[features].values, dtype=torch.float).to(device)))).cpu().detach()
+
 class MlpClassifier(nn.Module):
     def __init__(self, num_features: int, dropout: float):
         super().__init__()

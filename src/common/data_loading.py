@@ -17,7 +17,7 @@ def load_dataset_and_flatten_images(
 
         image_dfs = []
         for column_name in images_to_load:
-            image = batch[column_name].apply(pd.Series).iloc[:, :NUM_PIXELS]
+            image = batch[column_name].apply(pd.Series).iloc[:, :NUM_PIXELS].astype("float32")
             image.columns = [f"{column_name}_{i}" for i in range(image.shape[1])]
             image_dfs.append(image)
 

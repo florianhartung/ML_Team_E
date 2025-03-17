@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix, precision_recall_fscore_support
 from typing import Optional
 
 
@@ -34,6 +36,13 @@ def plot_training_validation(
     ax[1].set_ylabel("Accuracy")
     ax[1].legend()
 
+def plot_confusion_matrix(predicted: pd.DataFrame, actual: pd.DataFrame):
+    precision, recall, f1_score, support = precision_recall_fscore_support(actual, predicted)
+    matrix = confusion_matrix(actual, predicted)
+    display = ConfusionMatrixDisplay(confusion_matrix=matrix, display_labels=["Gammas", "Protons"])
+    display.plot(values_format="")
+
+    print(f"Gammas: precision={precision[0]:.3f}, recall={recall[0]:.3f}, f1={f1_score[0]:.3f} | Protons: precision={precision[1]:.3f}, recall={recall[1]:.3f}, f1={f1_score[1]:.3f}")
 
 def print_training_progress(
     current_epoch: int,

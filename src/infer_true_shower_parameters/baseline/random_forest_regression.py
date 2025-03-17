@@ -42,7 +42,6 @@ def train(
     image_features: list[list[str]],
     additional_features: list[str],
     target_features: list[str],
-    n_epochs=50,
     do_print=True,
     **kwargs
 ) -> RandomForestRegression:
@@ -58,7 +57,7 @@ def train(
 
     model = RandomForestRegression(**kwargs)
 
-    model.fit(images_train, y_train, epochs=n_epochs)
+    model.fit(images_train, y_train)
 
     if do_print:
         y_pred_train = model.predict(x_train)

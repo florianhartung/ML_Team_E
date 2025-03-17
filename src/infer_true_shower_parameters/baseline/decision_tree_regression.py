@@ -41,7 +41,6 @@ def train(
     image_features: list[list[str]],
     additional_features: list[str],
     target_features: list[str],
-    n_epochs=50,
     do_print=True,
     **kwargs
 ) -> DecisionTreeRegression:
@@ -57,7 +56,7 @@ def train(
 
     model = DecisionTreeRegression(**kwargs)
 
-    model.fit(x_train, y_train, epochs=n_epochs)
+    model.fit(x_train, y_train)
 
     if do_print:
         y_pred_train = model.predict(x_train)

@@ -1,4 +1,5 @@
 import torch
+import pandas as pd
 
 class BatchDataset(torch.utils.data.Dataset):
     """
@@ -9,10 +10,11 @@ class BatchDataset(torch.utils.data.Dataset):
     >> for x, y in loader: # x and y are batches
     >>      ...
     """
-    def __init__(self, *datasets):
-        super(BatchDataset, self).__init__()
+    def __init__(self, device, *datasets: pd.DataFrame):
+        super().__init__()
 
-        self.datasets = [*datasets]
+        self.device = device
+        self.datasets = [torch.from_numpy(dataset.values).float().cpu() for dataset in datasets]
         assert all([dataset.shape[0] == datasets[0].shape[0] for dataset in datasets])
 
     def __len__(self):

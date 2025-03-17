@@ -37,12 +37,12 @@ def plot_training_validation(
 
 def print_training_progress(
     current_epoch: int,
-    max_epochs: Optional[int],
+    max_epochs: int,
     epoch_time_seconds: Optional[int],
     train_loss_accuracy: (float, float),
     validation_loss_accuracy: (float, float),
 ):
-    epoch_msg = f"Epoch {current_epoch + 1}/{str(max_epochs) or "?"}"
+    epoch_msg = f"Epoch {current_epoch + 1}/{max_epochs}"
     time_msg = f" (took {epoch_time_seconds:.1f}s)" if epoch_time_seconds is not None else " "
     train_msg = f"TRAIN(loss|acc): {train_loss_accuracy[0]:.2f}|{100 * train_loss_accuracy[1]:.2f}%"
     validation_msg = f"VALID(loss|acc): {validation_loss_accuracy[0]:.2f}|{100 * validation_loss_accuracy[1]:.2f}%"

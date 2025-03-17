@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 from sklearn.tree import DecisionTreeRegressor
-from infer_true_shower_parameters import NUM_TRUE_SHOWER
+from src.infer_true_shower_parameters import NUM_TRUE_SHOWER
 import pandas as pd
 import pickle
 
@@ -42,19 +42,30 @@ def train(
     additional_features: list[str],
     target_features: list[str],
     n_epochs=50,
+    do_print=True,
     **kwargs
 ) -> DecisionTreeRegression:
     
-    images_train = torch.concat([torch.tensor(train_data[feature].values, dtype=torch.float) for feature in image_features])
-    images_val = torch.concat([torch.tensor(validation_data[feature].values, dtype=torch.float) for feature in image_features])
+    images_train = torch.concat([torch.tensor(train_data[feature].values, dtype=torch.float) for feature in image_features], dim=1)
+    images_val = torch.concat([torch.tensor(validation_data[feature].values, dtype=torch.float) for feature in image_features], dim=1)
     add_train = torch.tensor(train_data[additional_features].values, dtype=torch.float)
     add_val = torch.tensor(validation_data[additional_features].values, dtype=torch.float)
+    x_train = torch.cat([images_train, add_train], dim=1)
+    x_val = torch.cat([images_val, add_val], dim=1)
     y_train = torch.tensor(train_data[target_features].values, dtype=torch.float)
     y_val = torch.tensor(validation_data[target_features].values, dtype=torch.float)
 
     model = DecisionTreeRegression(**kwargs)
 
-    model.fit(images_train, y_train, epochs=n_epochs)
+    model.fit(x_train, y_train, epochs=n_epochs)
+
+    if do_print:
+        y_pred_train = model.predict(x_train)
+        print("Train loss:", ((y_pred_train - y_train) ** 2).mean())
+        print("Train R^2: ", 1 - ((y_pred_train - y_train) ** 2).sum() / ((y_train - y_train.mean()) ** 2).sum())
+        y_pred = model.predict(x_val)
+        print("Validation loss:", ((y_pred - y_val) ** 2).mean())
+        print("Validation R^2: ", 1 - ((y_pred - y_val) ** 2).sum() / ((y_val - y_val.mean()) ** 2).sum())
 
     return model
 

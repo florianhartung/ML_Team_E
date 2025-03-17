@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from infer_true_shower_parameters import NUM_TRUE_SHOWER
+from src.infer_true_shower_parameters import NUM_TRUE_SHOWER
 import pandas as pd
 
 class LinearRegression(nn.Module):
@@ -15,7 +15,7 @@ class LinearRegression(nn.Module):
     def predict(self, X):
         self.eval()
         with torch.no_grad():
-            return self.forward(X).numpy()
+            return self.forward(X).cpu().numpy()
         
     def test(self):
         print("test")
@@ -43,19 +43,30 @@ def train(
     additional_features: list[str],
     target_features: list[str],
     device: torch.device,
-    n_epochs=50
+    n_epochs=50,
+    do_print=True
 ) -> LinearRegression:
     
-    images_train = torch.concat([torch.tensor(train_data[feature].values, dtype=torch.float) for feature in image_features])
-    images_val = torch.concat([torch.tensor(validation_data[feature].values, dtype=torch.float) for feature in image_features])
+    images_train = torch.concat([torch.tensor(train_data[feature].values, dtype=torch.float) for feature in image_features], dim=1)
+    images_val = torch.concat([torch.tensor(validation_data[feature].values, dtype=torch.float) for feature in image_features], dim=1)
     add_train = torch.tensor(train_data[additional_features].values, dtype=torch.float)
     add_val = torch.tensor(validation_data[additional_features].values, dtype=torch.float)
-    y_train = torch.tensor(train_data[target_features].values, dtype=torch.float)
-    y_val = torch.tensor(validation_data[target_features].values, dtype=torch.float)
+    x_train = (torch.concat((images_train, add_train), dim=1) if len(additional_features) > 0 else images_train).to(device)
+    x_val = (torch.concat((images_val, add_val), dim=1) if len(additional_features) > 0 else images_val).to(device)
+    y_train = torch.tensor(train_data[target_features].values, dtype=torch.float).to(device)
+    y_val = torch.tensor(validation_data[target_features].values, dtype=torch.float).to(device)
 
-    model = LinearRegression(len(image_features) + len(additional_features)).to(device)
+    model = LinearRegression(sum([len(feature) for feature in image_features]) + len(additional_features)).to(device)
 
-    model.fit(images_train, y_train, epochs=n_epochs)
+    model.fit(x_train, y_train, epochs=n_epochs)
+
+    if do_print:
+        y_pred_train = model.predict(x_train)
+        print("Train loss:", ((y_pred_train - y_train.cpu().numpy()) ** 2).mean())
+        print("Train R^2: ", 1 - ((y_pred_train - y_train.cpu().numpy()) ** 2).sum() / ((y_train.cpu().numpy() - y_train.cpu().numpy().mean()) ** 2).sum())
+        y_pred = model.predict(x_val)
+        print("Validation loss:", ((y_pred - y_val.cpu().numpy()) ** 2).mean())
+        print("Validation R^2: ", 1 - ((y_pred - y_val.cpu().numpy()) ** 2).sum() / ((y_val.cpu().numpy() - y_val.cpu().numpy().mean()) ** 2).sum())
 
     return model
 

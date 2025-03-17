@@ -77,3 +77,4 @@ def load(path: str):
     model = DecisionTreeRegression()
     with open(path, 'rb') as f:
         model.tree = pickle.load(f)
+    return model

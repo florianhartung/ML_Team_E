@@ -14,13 +14,25 @@ def plot_training_validation(
 
     epochs = range(training_losses.shape[0])
 
-    ax[0].set_title("Loss")
-    ax[0].plot(epochs, training_losses, label="Training Loss")
-    ax[0].plot(epochs, validation_losses, label="Validation Loss")
 
-    ax[1].set_title("Accuracy")
-    ax[1].plot(epochs, training_accuracies, label="Training Accuracy")
-    ax[1].plot(epochs, validation_accuracies, label="Validation Accuracy")
+    ax[0].plot(epochs, training_losses, label="Training")
+    ax[0].plot(epochs, validation_losses, label="Validation")
+
+    ax[0].set_title("Loss progression")
+    ax[0].set_xlabel("Epoch")
+    ax[0].set_xticks(epochs)
+    ax[0].set_ylabel("Loss")
+    ax[0].legend()
+
+
+    ax[1].plot(epochs, training_accuracies, label="Training")
+    ax[1].plot(epochs, validation_accuracies, label="Validation")
+
+    ax[1].set_title("Accuracy progression")
+    ax[1].set_xlabel("Epoch")
+    ax[1].set_xticks(epochs)
+    ax[1].set_ylabel("Accuracy")
+    ax[1].legend()
 
 
 def print_training_progress(

@@ -12,7 +12,7 @@ class RandomForestRegression(nn.Module):
     """
     Random Forest Regressor that uses one forrest for all output properties.
     """
-    def __init__(self, n_trees:int=400, max_depth:int=40, ccp_alpha=0, n_jobs=32):
+    def __init__(self, n_trees:int=200, max_depth:int=20, ccp_alpha=0, n_jobs=32):
         super().__init__()
         self.forest = RandomForestRegressor(n_estimators=n_trees, max_depth=max_depth, n_jobs=n_jobs, ccp_alpha=ccp_alpha)
 
@@ -58,7 +58,7 @@ def train(
 
     model = RandomForestRegression(**kwargs)
 
-    model.fit(images_train, y_train)
+    model.fit(x_train, y_train)
 
     if do_print:
         y_pred_train = model.predict(x_train)
@@ -78,3 +78,4 @@ def load(path: str):
     model = RandomForestRegression()
     with open(path, 'rb') as f:
         model.forest = pickle.load(f)
+    return model

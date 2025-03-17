@@ -68,6 +68,7 @@ def train(
         validation_data: pd.DataFrame, 
         features: list[str],
         class_feature: str,
+        pos_weight: float,
         device: torch.device,
         epochs: int = 11,
 ) -> MlpClassifier:
@@ -80,7 +81,7 @@ def train(
 
     model = MlpClassifier(len(features), 0.2).to(device)
     optimizer = optim.AdamW(model.parameters(), lr=0.001, weight_decay=1e-2)
-    loss = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([1.777]).to(device))#pos_weight = torch.tensor([7.8]).to(device))
+    loss = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([pos_weight]).to(device))#pos_weight = torch.tensor([7.8]).to(device))
 
     for epoch in range(epochs):
         start = time.time()

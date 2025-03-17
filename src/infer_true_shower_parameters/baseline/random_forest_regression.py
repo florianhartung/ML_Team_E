@@ -7,6 +7,7 @@ from src.infer_true_shower_parameters import NUM_TRUE_SHOWER
 import pandas as pd
 import pickle
 from src.common.regression_evaluate import mse, r2
+from pathlib import Path
 
 class RandomForestRegression(nn.Module):
     """
@@ -79,3 +80,21 @@ def load(path: str):
     with open(path, 'rb') as f:
         model.forest = pickle.load(f)
     return model
+
+def evaluate(dir:Path, 
+             name:str, 
+             test_data:pd.DataFrame, 
+             image_features:list[list[str]], 
+             additional_features:list[str],
+             target_features:list[str]) -> float:
+    
+    model = load(dir/f"{name}.pth")
+
+    images_test = torch.concat([torch.tensor(test_data[feature].values, dtype=torch.float) for feature in image_features], dim=1)
+    add_test = torch.tensor(test_data[additional_features].values, dtype=torch.float)
+    x_test = torch.concat((images_test, add_test), dim=1)
+    y_test = torch.tensor(test_data[target_features].values, dtype=torch.float)
+
+    y_pred = model.predict(x_test)
+    
+    return r2(y_pred, y_test.numpy())

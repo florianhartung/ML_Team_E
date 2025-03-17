@@ -7,6 +7,7 @@ from src.common.batch import BatchDataset
 from torch.utils.data import DataLoader
 import torch.optim as optim
 import matplotlib.pyplot as plt
+from pathlib import Path
 
 class CNN(nn.Module):
     def __init__(self, in_channels, conv_channels, kernel_size, pooling_types):
@@ -86,6 +87,7 @@ def train(
     n_epochs=20,
     plot=False,
     weight_decay=1e-4,
+    learning_rate=1e-4,
     **kwargs
 ) -> ParticleCNNRegressor:
 
@@ -103,7 +105,7 @@ def train(
     train_loss, val_loss = [], []
 
     model = ParticleCNNRegressor(num_additional_parameters=len(additional_features), **kwargs).to(device)
-    optimizer = optim.Adam(model.parameters(recurse=True), lr=0.0001, weight_decay=weight_decay)
+    optimizer = optim.Adam(model.parameters(recurse=True), lr=learning_rate, weight_decay=weight_decay)
     criterion = nn.MSELoss()
 
     for epoch in range(n_epochs):
@@ -173,6 +175,23 @@ def save(model, path):
     torch.save(model.state_dict(), path)
 
 def load(path, **kwargs):
-    # model = ParticleCNNRegressor(**kwargs)
-    # model.load_state_dict(torch.load(path))
-    return torch.load(path)
+    model = ParticleCNNRegressor(**kwargs)
+    model.load_state_dict(torch.load(path, weights_only=True))
+    return model
+
+def evaluate(dir:Path, 
+             name:str, 
+             test_data:pd.DataFrame, 
+             image_features:list[list[str]], 
+             additional_features:list[str],
+             target_features:list[str]) -> float:
+    
+    model = load(dir/f"{name}.pth", num_additional_parameters=len(additional_features), in_channels=len(image_features))
+
+    images_test = torch.stack([torch.tensor(test_data[feature].values, dtype=torch.float) for feature in image_features], 1)
+    add_test = torch.tensor(test_data[additional_features].values, dtype=torch.float)
+    y_test = torch.tensor(test_data[target_features].values, dtype=torch.float)
+
+    y_pred = model(images_test, add_test)
+
+    return r_sq(y_pred, y_test).item()

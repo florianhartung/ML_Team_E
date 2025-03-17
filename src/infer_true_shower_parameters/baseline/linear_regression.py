@@ -4,6 +4,7 @@ import torch.optim as optim
 from src.infer_true_shower_parameters import NUM_TRUE_SHOWER
 import pandas as pd
 from src.common.regression_evaluate import mse, r2
+from pathlib import Path
 
 class LinearRegression(nn.Module):
     def __init__(self, input_size:int):
@@ -74,5 +75,22 @@ def train(
 def save(model, path):
     torch.save(model.state_dict(), path)
 
-def load(path):
-    return torch.load(path)
+def load(path, **kwargs):
+    model = LinearRegression(**kwargs)
+    model.load_state_dict(torch.load(path, weights_only=True))
+    return model
+
+def evaluate(dir:Path, 
+             name:str, 
+             test_data:pd.DataFrame, 
+             image_features:list[list[str]], 
+             additional_features:list[str],
+             target_features:list[str]) -> float:
+    model = load(dir/f"{name}.pth", input_size=sum([len(feature) for feature in image_features]) + len(additional_features))
+    images_test = torch.concat([torch.tensor(test_data[feature].values, dtype=torch.float) for feature in image_features], dim=1)
+    add_test = torch.tensor(test_data[additional_features].values, dtype=torch.float)
+    x_test = (torch.concat((images_test, add_test), dim=1) if len(additional_features) > 0 else images_test)
+    y_test = torch.tensor(test_data[target_features].values, dtype=torch.float)
+    y_pred = model.predict(x_test)
+    
+    return r2(y_pred, y_test.numpy())

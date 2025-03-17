@@ -1,3 +1,5 @@
+import time
+
 import torch
 import torch.nn as nn
 import numpy as np
@@ -7,6 +9,7 @@ from torch import optim
 from torch.utils.data import DataLoader
 
 from src.common.batch import BatchDataset
+from src.common import visualizations
 
 def create_dataset(data: pd.DataFrame, features: list[str], class_feature: str, device):
     return BatchDataset(
@@ -80,6 +83,8 @@ def train(
     loss = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([1.777]).to(device))#pos_weight = torch.tensor([7.8]).to(device))
 
     for epoch in range(epochs):
+        start = time.time()
+
         model.train()
 
         batch_losses = []
@@ -111,18 +116,22 @@ def train(
         validation_loss_history[epoch] = validation_loss
         validation_accuracy_history[epoch] = validation_accuracy
 
-        print(f"{epoch+1}/{epochs}: loss {epoch_loss} acc {epoch_accuracy} | val_loss {validation_loss} val_acc {validation_accuracy} ")
+        end = time.time()
 
-    fig, ax = plt.subplots(nrows=1, ncols=2)
-    fig.set_figwidth(15)
+        visualizations.print_training_progress(
+            epoch,
+            epochs,
+            end - start,
+            (epoch_loss, epoch_accuracy),
+            (validation_loss, validation_accuracy)
+        )
 
-    ax[0].plot(range(epochs), loss_history, label="Training Loss")
-    ax[0].plot(range(epochs), validation_loss_history, label="Validation Loss")
-    ax[0].legend()
-
-    ax[1].plot(range(epochs), accuracy_history, label="Training Accuracy")
-    ax[1].plot(range(epochs), validation_accuracy_history, label="Validation Accuracy")
-    ax[1].legend()
+    visualizations.plot_training_validation(
+        loss_history,
+        accuracy_history,
+        validation_loss_history,
+        validation_accuracy_history
+    )
 
     return model
 

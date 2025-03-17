@@ -6,6 +6,7 @@ from sklearn.tree import DecisionTreeRegressor
 from src.infer_true_shower_parameters import NUM_TRUE_SHOWER
 import pandas as pd
 import pickle
+from src.common.regression_evaluate import mse, r2
 
 class DecisionTreeRegression(nn.Module):
     """
@@ -60,11 +61,11 @@ def train(
 
     if do_print:
         y_pred_train = model.predict(x_train)
-        print("Train loss:", ((y_pred_train - y_train) ** 2).mean())
-        print("Train R^2: ", 1 - ((y_pred_train - y_train) ** 2).sum() / ((y_train - y_train.mean()) ** 2).sum())
+        print("Train loss:", mse(y_pred_train, y_train.numpy()))
+        print("Train R^2: ", r2(y_pred_train, y_train.numpy()))
         y_pred = model.predict(x_val)
-        print("Validation loss:", ((y_pred - y_val) ** 2).mean())
-        print("Validation R^2: ", 1 - ((y_pred - y_val) ** 2).sum() / ((y_val - y_val.mean()) ** 2).sum())
+        print("Validation loss:", mse(y_pred, y_val.numpy()))
+        print("Validation R^2: ", r2(y_pred, y_val.numpy()))
 
     return model
 

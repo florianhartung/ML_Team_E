@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from src.infer_true_shower_parameters import NUM_TRUE_SHOWER
 import pandas as pd
+from src.common.regression_evaluate import mse, r2
 
 class LinearRegression(nn.Module):
     def __init__(self, input_size:int):
@@ -62,11 +63,11 @@ def train(
 
     if do_print:
         y_pred_train = model.predict(x_train)
-        print("Train loss:", ((y_pred_train - y_train.cpu().numpy()) ** 2).mean())
-        print("Train R^2: ", 1 - ((y_pred_train - y_train.cpu().numpy()) ** 2).sum() / ((y_train.cpu().numpy() - y_train.cpu().numpy().mean()) ** 2).sum())
+        print("Train loss:", mse(y_pred_train, y_train.cpu().numpy()))
+        print("Train R^2: ", r2(y_pred_train, y_train.cpu().numpy()))
         y_pred = model.predict(x_val)
-        print("Validation loss:", ((y_pred - y_val.cpu().numpy()) ** 2).mean())
-        print("Validation R^2: ", 1 - ((y_pred - y_val.cpu().numpy()) ** 2).sum() / ((y_val.cpu().numpy() - y_val.cpu().numpy().mean()) ** 2).sum())
+        print("Validation loss:", mse(y_pred, y_val.cpu().numpy()))
+        print("Validation R^2: ", r2(y_pred, y_val.cpu().numpy()))
 
     return model
 

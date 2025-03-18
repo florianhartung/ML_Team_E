@@ -15,7 +15,6 @@ from src.common.HexaToParallelogram import HexaToParallelogram
 VALIDATION_TEST_BATCH_SIZE = 1024
 
 
-
 class ParticleClassificationDataset(Dataset):
     def __init__(
         self,
@@ -110,7 +109,9 @@ def train(
     validation_accuracy_history = np.zeros(epochs)
 
     optimizer = optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-2)
-    loss_function = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([pos_weight]).to(device))
+    loss_function = nn.BCEWithLogitsLoss(
+        pos_weight=torch.tensor([pos_weight]).to(device)
+    )
 
     for epoch in range(epochs):
         epoch_start = time.time()
@@ -211,6 +212,32 @@ def evaluate(
 
     return loss / len(dataloader), correct / total
 
+
+def predict(
+    model: ParticleCNNClassifier,
+    data: pd.DataFrame,
+    image_features: list[list[str]],
+    additional_features: list[str],
+    device: torch.device,
+) -> pd.DataFrame:
+    image_features = torch.swapaxes(
+        torch.stack(
+            [
+                torch.tensor(data[image].values, dtype=torch.float)
+                for image in image_features
+            ]
+        ),
+        0,
+        1,
+    ).to(device)
+    additional_features = torch.tensor(
+        data[additional_features].values, dtype=torch.float
+    ).to(device)
+    return (
+        torch.round(torch.sigmoid(model(image_features, additional_features)))
+        .cpu()
+        .detach()
+    )
 
 def save(model: ParticleCNNClassifier, path):
     torch.save(model.state_dict(), path)

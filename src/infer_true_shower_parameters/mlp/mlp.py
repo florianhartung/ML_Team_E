@@ -10,7 +10,7 @@ from pathlib import Path
 from src.common.batch import BatchDataset
 
 class ParticleMLPRegressor(nn.Module):
-    def __init__(self, input_size, fc_layers=[128, 64, 32, 8], dropout_rates=[0, 0, 0]):
+    def __init__(self, input_size, fc_layers=[256, 256, 256, 64, 8], dropout_rates=[0, 0, 0, 0]):
         super().__init__()
         
         assert len(fc_layers) >= 2, "At least two fully connected layers are required"
@@ -127,16 +127,17 @@ def train(
 
         plt.tight_layout()
         plt.show()
-        print(val_r2s[-1])
+        # print(val_r2s[-1])
 
     return model
 
 def save(model, path):
-    torch.save(model.state_dict(), path)
+    torch.save(model, path)
 
 def load(path, **kwargs):
-    model = ParticleMLPRegressor(**kwargs)
-    model.load_state_dict(torch.load(path, weights_only=True))
+    # model = ParticleMLPRegressor(**kwargs)
+    # model.load_state_dict(torch.load(path, weights_only=True))
+    model = torch.load(path, weights_only=False)
     return model
 
 def evaluate(dir:Path, 

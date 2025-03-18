@@ -6,7 +6,7 @@ from sklearn.ensemble import RandomForestRegressor
 from src.infer_true_shower_parameters import NUM_TRUE_SHOWER
 import pandas as pd
 import pickle
-from src.common.regression_evaluate import mse, r2
+from src.infer_true_shower_parameters.regression_evaluate import mse, r2
 from pathlib import Path
 
 class RandomForestRegression(nn.Module):

@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from src.infer_true_shower_parameters import NUM_TRUE_SHOWER
 import pandas as pd
-from src.common.regression_evaluate import mse, r2
+from src.infer_true_shower_parameters.regression_evaluate import mse, r2
 from pathlib import Path
 
 class LinearRegression(nn.Module):

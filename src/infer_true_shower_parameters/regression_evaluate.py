@@ -51,16 +51,19 @@ def regression_comparison(
     for module, name in zip(modules, model_names):
         for category, cat_title, img_features, add_features in zip(categories, categories_clear, img_combinations, add_combinations):
             full_name = f"regression_{name}_{particle_type}_{category}"
-            r2 = module.evaluate(
-                models_dir,
-                full_name,
-                test_data,
-                img_features,
-                add_features,
-                FEATURES_TRUE_SHOWER,
-                device
-            )
-            results.loc[cat_title, name] = float(r2)
+            try:
+                r2 = module.evaluate(
+                    models_dir,
+                    full_name,
+                    test_data,
+                    img_features,
+                    add_features,
+                    FEATURES_TRUE_SHOWER,
+                    device
+                )
+                results.loc[cat_title, name] = float(r2)
+            except FileNotFoundError:
+                print(f"Model file for {full_name} not found. Note that we were not able to include all model files due to file size limitations. Feel free to rerun the corresponding cells or contact us for the files.")
 
     return results
             

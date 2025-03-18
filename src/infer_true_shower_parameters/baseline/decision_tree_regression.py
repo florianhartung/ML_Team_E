@@ -85,7 +85,8 @@ def evaluate(dir:Path,
              test_data:pd.DataFrame, 
              image_features:list[list[str]], 
              additional_features:list[str],
-             target_features:list[str]) -> float:
+             target_features:list[str],
+             device:torch.device) -> float:
     
     model = load(dir/f"{name}.pth")
 

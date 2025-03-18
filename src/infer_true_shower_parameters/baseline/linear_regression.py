@@ -85,7 +85,8 @@ def evaluate(dir:Path,
              test_data:pd.DataFrame, 
              image_features:list[list[str]], 
              additional_features:list[str],
-             target_features:list[str]) -> float:
+             target_features:list[str],
+             device:torch.device) -> float:
     model = load(dir/f"{name}.pth", input_size=sum([len(feature) for feature in image_features]) + len(additional_features))
     images_test = torch.concat([torch.tensor(test_data[feature].values, dtype=torch.float) for feature in image_features], dim=1)
     add_test = torch.tensor(test_data[additional_features].values, dtype=torch.float)

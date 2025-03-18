@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 from src.common import *
+import torch
 
 def mse(predict, actual):
     return np.mean((predict - actual) ** 2)
@@ -14,7 +15,8 @@ def regression_comparison(
         model_names:list,
         test_data:pd.DataFrame,
         models_dir:Path,
-        particle_type:str
+        particle_type:str,
+        device:torch.device
 ) -> pd.DataFrame:
     """
     param modules: A list of python modules that include a method load(path)->model and evaluate(dir, name, test_data_df, image_features, additional_features, target_features)->float
@@ -55,7 +57,8 @@ def regression_comparison(
                 test_data,
                 img_features,
                 add_features,
-                FEATURES_TRUE_SHOWER
+                FEATURES_TRUE_SHOWER,
+                device
             )
             results.loc[cat_title, name] = float(r2)
 

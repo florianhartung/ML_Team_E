@@ -10,8 +10,8 @@ import pickle
 
 BaselineModel = LogisticRegression | LinearSVC | RandomForestClassifier
 
-def predict(model: BaselineModel, data: pd.DataFrame, features: list[str]):
-    return model.predict(data[features])
+def predict(model: BaselineModel, data: pd.DataFrame):
+    return model.predict(data)
 
 def evaluate(model: BaselineModel, x: pd.DataFrame, y_true: pd.DataFrame):
     predicted = model.predict(x)    

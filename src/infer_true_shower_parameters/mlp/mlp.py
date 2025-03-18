@@ -144,14 +144,17 @@ def evaluate(dir:Path,
              test_data:pd.DataFrame, 
              image_features:list[list[str]], 
              additional_features:list[str],
-             target_features:list[str]) -> float:
+             target_features:list[str],
+             device: torch.device
+             ) -> float:
     
-    model = load(dir/f"{name}.pth", num_additional_parameters=len(additional_features), in_channels=len(image_features))
+    model = load(dir/f"{name}.pth", input_size=len(image_features) + len(additional_features)).to(device)
 
     x_test = torch.concat([torch.tensor(test_data[feature].values, dtype=torch.float) for feature in image_features]
-                          + [torch.tensor(test_data[additional_features])], dim=1)
-    y_test = torch.tensor(test_data[target_features].values, dtype=torch.float)
+                          + [torch.tensor(test_data[additional_features].values, dtype=torch.float)], dim=1).to(device)
+    y_test = torch.tensor(test_data[target_features].values, dtype=torch.float).to(device)
 
+    model.eval()
     y_pred = model(x_test)
 
-    return r_sq(y_pred, y_test).item()
+    return r_sq(y_pred, y_test).cpu().item()

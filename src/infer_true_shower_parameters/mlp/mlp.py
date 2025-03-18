@@ -10,7 +10,7 @@ from pathlib import Path
 from src.common.batch import BatchDataset
 
 class ParticleMLPRegressor(nn.Module):
-    def __init__(self, input_size, fc_layers=[128, 64, 32, 8], dropout_rates=[0.2, 0.2, 0.2]):
+    def __init__(self, input_size, fc_layers=[128, 64, 32, 8], dropout_rates=[0, 0, 0]):
         super().__init__()
         
         assert len(fc_layers) >= 2, "At least two fully connected layers are required"
@@ -49,13 +49,13 @@ def train(
     **kwargs
 ) -> ParticleMLPRegressor:
 
-    x_train_df = train_data[additional_features].join([train_data[f] for f in image_features])
-    x_val_df = validation_data[additional_features].join([train_data[f] for f in image_features])
+    x_train_df = pd.concat([train_data[f] for f in image_features] + [train_data[additional_features]], axis=1)
+    x_val_df = pd.concat([validation_data[f] for f in image_features] + [validation_data[additional_features]], axis=1)
     y_train_df = train_data[target_features]
     y_val_df = validation_data[target_features]
 
-    dataset = BatchDataset(x_train_df, y_train_df)
-    test_dataset = BatchDataset(x_val_df, y_val_df)
+    dataset = BatchDataset(device, x_train_df, y_train_df)
+    test_dataset = BatchDataset(device, x_val_df, y_val_df)
 
     train_r2s, val_r2s = [], []
     train_loss, val_loss = [], []
@@ -72,7 +72,7 @@ def train(
         running_loss = 0.0
         running_r2 = 0.0
 
-        loader = DataLoader(dataset, batch_size=64, shuffle=True) # This should be done in each epoch
+        loader = DataLoader(dataset, batch_size=64, shuffle=True)
         for x, y in loader: # x and y are batches
             x = x.to(device)
             y = y.to(device)
@@ -112,7 +112,7 @@ def train(
                 val_loss.append(running_loss / len(val_loader))
 
     if plot:
-        fig, axs = plt.subplots(2, 1, figsize=(10, 8))
+        fig, axs = plt.subplots(1, 2, figsize=(10,5))
 
         axs[0].plot(train_r2s, label="train r2")
         axs[0].plot(val_r2s, label="val r2")
@@ -127,6 +127,7 @@ def train(
 
         plt.tight_layout()
         plt.show()
+        print(val_r2s[-1])
 
     return model
 

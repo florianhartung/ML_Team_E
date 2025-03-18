@@ -1,4 +1,3 @@
-# --index-url https://download.pytorch.org/whl/cu127
 jupyter
 notebook
 
@@ -11,6 +10,7 @@ scikit-learn
 pandas
 seaborn
 
+# --index-url https://download.pytorch.org/whl/cu127
 torch
 torchvision
 torchaudio

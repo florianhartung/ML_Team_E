@@ -63,7 +63,7 @@ def regression_comparison(
                 )
                 results.loc[cat_title, name] = float(r2)
             except FileNotFoundError:
-                print(f"Model file for {full_name} not found. Note that we were not able to include all model files due to file size limitations. Feel free to rerun the corresponding cells or contact us for the files.")
+                print(f"Model file for {full_name} not found. Note that we were not able to include all model files due to file size limitations. Feel free to rerun the corresponding cells or retrieve the model files from the server we were proided under /home/teame/submission_additional_models/.")
 
     return results
             

@@ -245,6 +245,6 @@ def save(model: ParticleCNNClassifier, path):
 
 def load(path, additional_features, device):
     model = ParticleCNNClassifier(len(additional_features))
-    model.load_state_dict(torch.load(path))
+    model.load_state_dict(torch.load(path, weights_only=True))
     model.to(device)
     return model

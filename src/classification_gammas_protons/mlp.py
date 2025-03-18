@@ -143,4 +143,7 @@ def save(model, path):
     torch.save(model.state_dict(), path)
 
 def load(path, num_features, device):
-    return MlpClassifier(num_features, 0.2).to(device)
+    model = MlpClassifier(num_features, 0.2)
+    model.load_state_dict(torch.load(path, weights_only=True))
+    model.to(device)
+    return model

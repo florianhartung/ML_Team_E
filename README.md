@@ -1,9 +1,10 @@
-# Placeholder for our cool team name
+# Machine Learning - Team E
 
 
 ## Setup
 ```sh
 conda create --name MAGICuda python=3.10
+conda activate MAGICuda
 pip install jupyter notebook matplotlib numpy pyarrow ipython ipykernel scikit-learn pandas seaborn
 pip install torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 --index-url https://download.pytorch.org/whl/cu121
 ```
